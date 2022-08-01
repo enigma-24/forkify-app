@@ -17,8 +17,6 @@ const timeout = function (s) {
 // https://forkify-api.herokuapp.com/v2
 ///////////////////////////////////////
 
-
-
 const controlRecipes = async () => {
   try {
     const id = window.location.hash.slice(1);
@@ -31,8 +29,12 @@ const controlRecipes = async () => {
 
     recipeView.render(model.state.recipe);
   } catch (err) {
-    alert(err);
+    recipeView.renderError();
   }
 };
 
-['hashchange', 'load'].forEach(ev => window.addEventListener(ev, controlRecipes));
+function init() {
+  recipeView.addHandlerRender(controlRecipes);
+}
+
+init();
