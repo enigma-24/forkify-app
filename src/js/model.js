@@ -24,7 +24,6 @@ export const loadRecipe = async id => {
       cookingTime: recipe.cooking_time,
       ingredients: recipe.ingredients,
     };
-    console.log(state.recipe);
   } catch (err) {
     console.log('from model: ', err);
     throw err;
@@ -46,7 +45,6 @@ export const loadSearchResults = async query => {
       };
     });
 
-    console.log('state.search.results: ', state.search.results);
   } catch (err) {
     console.error('err: ', err);
     throw err;
