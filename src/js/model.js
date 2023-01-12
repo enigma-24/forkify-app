@@ -1,5 +1,5 @@
-import { API_URL, RESULTS_PER_PAGE } from './config.js';
-import { getJSON } from './helper.js';
+import { API_URL, RESULTS_PER_PAGE, API_KEY } from './config.js';
+import { getJSON, sendJSON } from './helper.js';
 
 export const state = {
   recipe: {},
@@ -99,7 +99,36 @@ export const deleteBookmark = id => {
 
 const clearBookmarks = () => {
   localStorage.clear('bookmarks');
-}
+};
+
+export const uploadRecipe = async newRecipe => {
+  try {
+    const ingredients = Object.entries(newRecipe)
+      .filter(entry => entry[0].startsWith('ingredient') && entry[1] !== '')
+      .map(ingredient => {
+        const ingArr = ingredient[1].replaceAll(' ', '').split(',');
+        if (ingArr.length !== 3)
+          throw new Error('Incorrect ingredient format!');
+        const [quantity, unit, description] = ingArr;
+        return { quantity: quantity ? +quantity : null, unit, description };
+      });
+
+    const recipe = {
+      title: newRecipe.title,
+      source_url: newRecipe.sourceUrl,
+      image_url: newRecipe.image,
+      publisher: newRecipe.publisher,
+      cooking_time: +newRecipe.cookingTime,
+      servings: +newRecipe.servings,
+      ingredients,
+    };
+
+    const data = await sendJSON(`${API_URL}?key=${API_KEY}`, recipe);
+    console.log('data: ', data);
+  } catch (err) {
+    throw err;
+  }
+};
 
 const init = () => {
   const storage = localStorage.getItem('bookmarks');
